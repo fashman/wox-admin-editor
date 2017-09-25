@@ -12,13 +12,13 @@
 
 ## import
 
-```
+```javascript
 $ npm install wox-admin-edit
 ```
 
 ## toolbar
-> 默认***toolbar***为：
-```
+> 默认**toolbar**为：
+```javascript
 const defaultToolbar = {
   textStyle: ['bold', 'italic', 'underline', 'strike'],
   quote: ['blockquote'],
@@ -33,4 +33,4 @@ const defaultToolbar = {
   clean: ['clean']
 };
 ```
-> 自定义 ***toolbar***请按这种格式书写
+> 自定义 **toolbar**请按这种格式书写
