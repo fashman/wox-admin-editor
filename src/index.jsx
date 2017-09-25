@@ -29,13 +29,9 @@ var modules = {
 };
 
 export default class EditorCom extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { text: '' }
-    this.count = true;
-  }
   handleChange = (value) => {
-    this.props.callback( {[this.props.keyName]: value} );
+    const key = this.props.keyName || 'value';
+    this.props.callback( {[key]: value} );
   }
   render() {
     return (
