@@ -9,23 +9,19 @@
 import React, { Component } from 'react';
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css';
-import './style.less';
 
-var modules = {
-  toolbar: [
-    ['bold', 'italic', 'underline', 'strike'],
-    ['blockquote'],
-    [{ 'header': 1 }, { 'header': 2 }],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'indent': '-1'}, { 'indent': '+1' }],
-    [{ 'size': ['small', false, 'large', 'huge'] }],
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-    [{ 'color': [] }, { 'background': [] }],
-    [{ 'font': [] }],
-    [{ 'align': [] }],
-    [ 'link', 'image', 'video' ],
-    ['clean']
-  ],
+const defaultToolbar = {
+  textStyle: ['bold', 'italic', 'underline', 'strike'],
+  quote: ['blockquote'],
+  header: [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+  list: [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  indent: [{ 'indent': '-1'}, { 'indent': '+1' }],
+  size: [{ 'size': ['small', false, 'large', 'huge'] }],
+  color: [{ 'color': [] }, { 'background': [] }],
+  font: [{ 'font': [] }],
+  align: [{ 'align': [] }],
+  liv: [ 'link', 'image', 'video' ],
+  clean: ['clean']
 };
 
 export default class EditorCom extends Component {
@@ -34,6 +30,11 @@ export default class EditorCom extends Component {
     this.props.callback( {[key]: value} );
   }
   render() {
+    const toolbar = Object.assign({}, defaultToolbar, this.props.toolbar || {});
+    const modules = { toolbar: [] };
+    for (let i in toolbar ){
+      modules.toolbar.push( toolbar[i] );
+    }
     return (
       <ReactQuill
         placeholder={this.props.placeholder || '请输入信息'}
