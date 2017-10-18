@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css';
+import './style.mod.less';
 
 const colors = [
   '#000000', '#444444', '#666666', '#999999', '#cccccc', '#eeeeee', '#f3f3f3', '#ffffff',

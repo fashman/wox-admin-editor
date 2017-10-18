@@ -14,6 +14,6 @@
 
 ```javascript
 import WoxEditor from 'wox-admin-editor';
-import 'wox-admin-editor/lib/index.css';
 
 ReactDOM.render(<WoxEditor />, rootEle);
+```
