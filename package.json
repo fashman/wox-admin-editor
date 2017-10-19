@@ -1,6 +1,6 @@
 {
-  "name": "wox-admin-edit",
-  "version": "0.0.9",
+  "name": "wox-admin-editor",
+  "version": "0.2.2",
   "description": "basic react component",
   "main": "lib/index.js",
   "scripts": {
@@ -19,6 +19,7 @@
   "devDependencies": {
     "antd": "^2.10.4",
     "babel-cli": "^6.24.1",
+    "babel-plugin-import": "^1.6.2",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
