@@ -1,6 +1,6 @@
 {
   "name": "wox-admin-editor",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "basic react component",
   "main": "lib/index.js",
   "scripts": {
@@ -16,6 +16,9 @@
     "react",
     "component"
   ],
+  "dependencies": {
+    "react-quill": "^1.1.0"
+  },
   "devDependencies": {
     "antd": "^2.10.4",
     "babel-cli": "^6.24.1",
@@ -35,7 +38,6 @@
     "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "react-quill": "^1.1.0",
     "rimraf": "^2.6.1"
   },
   "peerDependencies": {
