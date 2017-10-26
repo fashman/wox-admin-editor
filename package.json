@@ -1,6 +1,6 @@
 {
   "name": "wox-admin-editor",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "basic react component",
   "main": "lib/index.js",
   "scripts": {
