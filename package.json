@@ -1,6 +1,6 @@
 {
   "name": "wox-admin-editor",
-  "version": "0.2.4",
+  "version": "0.3.0-alpha",
   "description": "basic react component",
   "main": "lib/index.js",
   "scripts": {
@@ -17,6 +17,10 @@
     "component"
   ],
   "dependencies": {
+    "draft-js": "^0.10.4",
+    "draftjs-to-html": "^0.7.6",
+    "html-to-draftjs": "^1.0.1",
+    "react-draft-wysiwyg": "^1.10.12",
     "react-quill": "^1.1.0"
   },
   "devDependencies": {
