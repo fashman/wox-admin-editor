@@ -28,18 +28,13 @@ class WoxEditor extends Component {
     this.state = {
       callback: props.callback,
       keyName: props.keyName,
-      editorState:'',
-      a:1
+      editorState: props.value || ''
     };
 
   }
   componentWillReceiveProps(nextProps){
-    
-    if(nextProps.value && this.state.a > 1){
+    if (nextProps.value == this.props.value) {
       return;
-    }
-    if(nextProps.value){
-      this.setState({a:2})
     }
     const contentBlock = htmlToDraft(nextProps.value || '');
     const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
@@ -53,7 +48,6 @@ class WoxEditor extends Component {
        (resolve, reject) => {
          const xhr = new XMLHttpRequest();
          xhr.open('POST', this.props.url);
-         xhr.setRequestHeader('Authorization', 'Client-ID XXXXX');
          const data = new FormData();
          data.append('image', file);
          xhr.send(data);
