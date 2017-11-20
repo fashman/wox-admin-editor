@@ -26,7 +26,7 @@ class WoxEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      callBack: props.callBack,
+      callback: props.callback,
       keyName: props.keyName,
       editorState:'',
       a:1
@@ -75,7 +75,7 @@ class WoxEditor extends Component {
     this.setState({
       editorState:editorState
     });
-    this.props.callBack({[keyName]:value});
+    this.props.callback({[keyName]:value});
   };
 
   render() {
@@ -105,7 +105,7 @@ class WoxEditor extends Component {
 }
 
 WoxEditor.propTypes = {
-  callBack:  PropTypes.func.isRequired,
+  callback:  PropTypes.func.isRequired,
   url:PropTypes.string.isRequired,
   keyName : PropTypes.string.isRequired,
   value:PropTypes.string.isRequired,
