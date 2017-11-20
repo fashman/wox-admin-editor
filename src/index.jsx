@@ -41,7 +41,7 @@ class WoxEditor extends Component {
     if(nextProps.value){
       this.setState({a:2})
     }
-    const contentBlock = htmlToDraft(nextProps.value);
+    const contentBlock = htmlToDraft(nextProps.value || '');
     const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
     const editorState = EditorState.createWithContent(contentState);
     this.setState({
