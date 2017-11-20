@@ -91,8 +91,9 @@ class WoxEditor extends Component {
           locale: 'zh',
         }}
         toolbar={{
-        
+          inline: { inDropdown: true },
           link: { inDropdown: true },
+          history: { inDropdown: true },
           image: { uploadCallback: this.uploadImageCallBack},
           colorPicker:{
             colors:colors
