@@ -8,12 +8,20 @@
 | keyName | 返回对象的属性名 | String | value |
 | readOnly | 是否只读 | Boolean | false |
 | value | 富文本框值 | String | |
-| toolbar | 功能栏，如需自定义配置，请参考 [默认配置](https://github.com/firebugger/wox-admin-editor/blob/master/src/index.jsx#L15) | Object | |
+| url | 图片上传地址 | String | 必填 |
 
 ## Usage
 
 ```javascript
 import WoxEditor from 'wox-admin-editor';
 
-ReactDOM.render(<WoxEditor />, rootEle);
+ReactDOM.render(
+	<WoxEditor 
+		value={ this.state.detailCN || '' }
+		callback={this.CallBack}
+		keyName={'detailCN'}
+		url={`${base.img}/wximg/gtfile/upload`}
+	/>, 
+	rootEle
+);
 ```
