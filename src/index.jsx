@@ -135,7 +135,7 @@ WoxEditor.propTypes = {
 
 WoxEditor.defaultProps = {
   placeholder: '请输入信息',
-  readOnly:false
+  readOnly: false
 };
 
 export default WoxEditor;
