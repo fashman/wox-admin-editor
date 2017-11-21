@@ -19,92 +19,120 @@ const colors = [
   '#990000', '#b45f06', '#bf9000', '#38761d', '#134f5c', '#0b5394', '#351c75', '#741b47',
   '#660000', '#783f04', '#7f6000', '#274e13', '#0c343d', '#073763', '#20124d', '#4c1130'
 ];
-/**
- * 组件名遵循 `Wox` 前缀的规范
- */
+
+
 class WoxEditor extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      callback: props.callback,
-      keyName: props.keyName,
-      editorState: props.value || ''
-    };
 
+    const contentBlock = htmlToDraft(props.value || '');
+    const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+    const editorState = EditorState.createWithContent(contentState);
+
+    this.state = {
+      editorState: editorState,
+      firstRender: true,                                // 只能在第一次请求回来后，使用 `nextProps` 带过来的值更新编辑器
+      needReciveProps: props.needReciveProps || false   // 判断是使用 `nextProps` 来进行第一次更新，还是自己通过外部字段自己控制组件的冲渲染
+    };
   }
-  componentWillReceiveProps(nextProps){
-    if (nextProps.value == this.props.value) {
+
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.needReciveProps || !this.state.firstRender) {
       return;
     }
+
     const contentBlock = htmlToDraft(nextProps.value || '');
     const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
     const editorState = EditorState.createWithContent(contentState);
+
     this.setState({
-      editorState:editorState,
-    })
-  }
-  uploadImageCallBack = (file) => {
-    return new Promise(
-       (resolve, reject) => {
-         const xhr = new XMLHttpRequest();
-         xhr.open('POST', this.props.url);
-         const data = new FormData();
-         data.append('image', file);
-         xhr.send(data);
-         xhr.addEventListener('load', () => {
-           const response = JSON.parse(xhr.responseText);
-           const data = {link:response.data.url};
-           resolve({data:data});
-         });
-         xhr.addEventListener('error', () => {
-           const error = JSON.parse(xhr.responseText);
-           reject(error);
-         });
-       }
-     );
-  }
-  onEditorStateChange = (editorState) => {
-    const value  = draftToHtml(convertToRaw(editorState.getCurrentContent()));
-    const keyName = this.props.keyName;
-    this.setState({
-      editorState:editorState
+      editorState: editorState,
+      firstRender: false
     });
-    this.props.callback({[keyName]:value});
-  };
+  }
+
+  onEditorStateChange = (editorState) => {
+    const { keyName } = this.props;
+    const value = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+
+    this.setState({
+      editorState,
+    });
+    this.props.callback({
+      [keyName]: value
+    });
+  }
+
+  uploadImageCallBack = (file) => {
+    const { url } = this.props;
+
+    return new Promise(
+      (resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+        const data = new FormData();
+        data.append('image', file);
+        xhr.send(data);
+        xhr.addEventListener('load', () => {
+          const response = JSON.parse(xhr.responseText);
+          const data = {link:response.data.url};
+          resolve({data:data});
+        });
+        xhr.addEventListener('error', () => {
+          const error = JSON.parse(xhr.responseText);
+          reject(error);
+        });
+      }
+    );
+  }
 
   render() {
+    const { placeholder, readOnly, url } = this.props;
+    const { editorState } = this.state;
+    const toolbarConfig = {
+      options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'remove', 'history'],
+      inline: { inDropdown: true },
+      link: { inDropdown: true },
+      history: { inDropdown: true },
+      colorPicker: {
+        colors: colors
+      },
+      image: {
+        uploadCallback: this.uploadImageCallBack
+      }
+    };
+
+    if (url) {
+      toolbarConfig.options.push = 'image';
+    }
+
     return (
-      <Editor
-        editorState={this.state.editorState}
-        wrapperClassName={cx('wox-wrapper')}
-        editorClassName={cx('wox-editor')}
-        onEditorStateChange={this.onEditorStateChange}
-        placeholder={this.props.placeholder}
-        readOnly={this.props.readOnly}
-        localization={{
-          locale: 'zh',
-        }}
-        toolbar={{
-          inline: { inDropdown: true },
-          link: { inDropdown: true },
-          history: { inDropdown: true },
-          image: { uploadCallback: this.uploadImageCallBack},
-          colorPicker:{
-            colors:colors
-          }
-        }}
-      />
+      <div>
+        <Editor
+          editorState={editorState}
+          wrapperClassName="wox-editor-wrapper"
+          editorClassName="wox-editor"
+          onEditorStateChange={this.onEditorStateChange}
+          placeholder={placeholder}
+          readOnly={readOnly}
+          localization={{
+            locale: 'zh',
+          }}
+          toolbar={toolbarConfig}
+        />
+      </div>
     );
   }
 }
 
 WoxEditor.propTypes = {
   callback:  PropTypes.func.isRequired,
-  url:PropTypes.string.isRequired,
-  keyName : PropTypes.string.isRequired,
-  value:PropTypes.string.isRequired,
-  readOnly:PropTypes.bool
+  keyName: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  url: PropTypes.string,
+  readOnly: PropTypes.bool
 };
+
 WoxEditor.defaultProps = {
   placeholder: '请输入信息',
   readOnly:false

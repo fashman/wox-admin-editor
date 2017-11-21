@@ -21,7 +21,6 @@
     "draftjs-to-html": "^0.7.6",
     "html-to-draftjs": "^1.0.1",
     "react-draft-wysiwyg": "^1.10.12",
-    "react-quill": "^1.1.0"
   },
   "devDependencies": {
     "antd": "^2.10.4",
