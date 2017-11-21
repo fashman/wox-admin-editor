@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css';
-import './style.mod.less';
+import PropTypes from 'prop-types';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import classNames from 'classnames/bind';
+import styles from './style.mod.less';
 
+const cx = classNames.bind(styles);
 const colors = [
   '#000000', '#444444', '#666666', '#999999', '#cccccc', '#eeeeee', '#f3f3f3', '#ffffff',
   '#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#9900ff', '#ff00ff',
@@ -13,43 +19,95 @@ const colors = [
   '#990000', '#b45f06', '#bf9000', '#38761d', '#134f5c', '#0b5394', '#351c75', '#741b47',
   '#660000', '#783f04', '#7f6000', '#274e13', '#0c343d', '#073763', '#20124d', '#4c1130'
 ];
-const defaultToolbar = {
-  textStyle: ['bold', 'italic', 'underline', 'strike'],
-  quote: ['blockquote'],
-  header: [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-  list: [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-  indent: [{ 'indent': '-1'}, { 'indent': '+1' }],
-  size: [{ 'size': ['small', false, 'large', 'huge'] }],
-  color: [{ 'color': colors }, { 'background': colors }],
-  font: [{ 'font': [] }],
-  align: [{ 'align': [] }],
-  liv: [ 'link', 'image', 'video' ],
-  clean: ['clean']
-};
+/**
+ * 组件名遵循 `Wox` 前缀的规范
+ */
+class WoxEditor extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      callback: props.callback,
+      keyName: props.keyName,
+      editorState: props.value || ''
+    };
 
-export default class WoxEditor extends Component {
-
-  handleChange = (value) => {
-    const key = this.props.keyName || 'value';
-    this.props.callback( {[key]: value} );
   }
+  componentWillReceiveProps(nextProps){
+    if (nextProps.value == this.props.value) {
+      return;
+    }
+    const contentBlock = htmlToDraft(nextProps.value || '');
+    const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+    const editorState = EditorState.createWithContent(contentState);
+    this.setState({
+      editorState:editorState,
+    })
+  }
+  uploadImageCallBack = (file) => {
+    return new Promise(
+       (resolve, reject) => {
+         const xhr = new XMLHttpRequest();
+         xhr.open('POST', this.props.url);
+         const data = new FormData();
+         data.append('image', file);
+         xhr.send(data);
+         xhr.addEventListener('load', () => {
+           const response = JSON.parse(xhr.responseText);
+           const data = {link:response.data.url};
+           resolve({data:data});
+         });
+         xhr.addEventListener('error', () => {
+           const error = JSON.parse(xhr.responseText);
+           reject(error);
+         });
+       }
+     );
+  }
+  onEditorStateChange = (editorState) => {
+    const value  = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+    const keyName = this.props.keyName;
+    this.setState({
+      editorState:editorState
+    });
+    this.props.callback({[keyName]:value});
+  };
 
   render() {
-    const toolbar = Object.assign({}, defaultToolbar, this.props.toolbar || {});
-    const modules = { toolbar: [] };
-
-    for (let i in toolbar ){
-      modules.toolbar.push(toolbar[i]);
-    }
     return (
-      <ReactQuill
-        placeholder={this.props.placeholder || '请输入信息'}
-        value={this.props.value}
-        theme="snow"
-        onChange={this.handleChange}
-        modules={modules}
-        readOnly={this.props.readOnly || false}
+      <Editor
+        editorState={this.state.editorState}
+        wrapperClassName={cx('wox-wrapper')}
+        editorClassName={cx('wox-editor')}
+        onEditorStateChange={this.onEditorStateChange}
+        placeholder={this.props.placeholder}
+        readOnly={this.props.readOnly}
+        localization={{
+          locale: 'zh',
+        }}
+        toolbar={{
+          inline: { inDropdown: true },
+          link: { inDropdown: true },
+          history: { inDropdown: true },
+          image: { uploadCallback: this.uploadImageCallBack},
+          colorPicker:{
+            colors:colors
+          }
+        }}
       />
-    )
+    );
   }
 }
+
+WoxEditor.propTypes = {
+  callback:  PropTypes.func.isRequired,
+  url:PropTypes.string.isRequired,
+  keyName : PropTypes.string.isRequired,
+  value:PropTypes.string.isRequired,
+  readOnly:PropTypes.bool
+};
+WoxEditor.defaultProps = {
+  placeholder: '请输入信息',
+  readOnly:false
+};
+
+export default WoxEditor;
