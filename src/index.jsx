@@ -31,24 +31,19 @@ class WoxEditor extends Component {
 
     this.state = {
       editorState: editorState,
-      firstRender: true,                                // 只能在第一次请求回来后，使用 `nextProps` 带过来的值更新编辑器
-      needReciveProps: props.needReciveProps || false   // 判断是使用 `nextProps` 来进行第一次更新，还是自己通过外部字段自己控制组件的冲渲染
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.needReciveProps || !this.state.firstRender) {
-      return;
-    }
+   
 
     const contentBlock = htmlToDraft(nextProps.value || '');
     const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
     const editorState = EditorState.createWithContent(contentState);
 
-    this.setState({
-      editorState: editorState,
-      firstRender: false
-    });
+    
+    // 这里没有用 setStste 方法，直接改动 state,是为了 不让组件 刷新 render,导致编辑器失去光标状态。而用这个方法是需要拿到第一次传过来的数据值。
+    this.state.editorState = editorState;
   }
 
   onEditorStateChange = (editorState) => {
@@ -56,7 +51,7 @@ class WoxEditor extends Component {
     const value = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 
     this.setState({
-      editorState,
+      editorState
     });
     this.props.callback({
       [keyName]: value
@@ -90,7 +85,7 @@ class WoxEditor extends Component {
     const { placeholder, readOnly, url } = this.props;
     const { editorState } = this.state;
     const toolbarConfig = {
-      options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'remove', 'history'],
+      options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'remove', 'history','image'],
       inline: { inDropdown: true },
       link: { inDropdown: true },
       history: { inDropdown: true },
@@ -102,16 +97,14 @@ class WoxEditor extends Component {
       }
     };
 
-    if (url) {
-      toolbarConfig.options.push = 'image';
-    }
+   
 
     return (
       <div>
         <Editor
           editorState={editorState}
-          wrapperClassName="wox-editor-wrapper"
-          editorClassName="wox-editor"
+          wrapperClassName={cx('wox-editor-wrapper')}
+          editorClassName={cx('wox-editor')}
           onEditorStateChange={this.onEditorStateChange}
           placeholder={placeholder}
           readOnly={readOnly}
