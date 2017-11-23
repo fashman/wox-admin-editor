@@ -20,7 +20,6 @@ const colors = [
   '#660000', '#783f04', '#7f6000', '#274e13', '#0c343d', '#073763', '#20124d', '#4c1130'
 ];
 
-
 class WoxEditor extends Component {
   constructor(props) {
     super(props);
@@ -35,14 +34,19 @@ class WoxEditor extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-   
-
     const contentBlock = htmlToDraft(nextProps.value || '');
     const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
     const editorState = EditorState.createWithContent(contentState);
 
-    
-    // 这里没有用 setStste 方法，直接改动 state,是为了 不让组件 刷新 render,导致编辑器失去光标状态。而用这个方法是需要拿到第一次传过来的数据值。
+    /**
+     * 背景：
+     * 富文本编辑器需要内部自己维护一个数据状态 `editorState`，
+     * 但是初始化的时候依赖外部传入的值，需要通过 `componentWillReceiveProps` 获取，
+     * 如果使用 `setStste` 会触发组件 `rerender`，导致编辑器失去光标，无法编辑
+     *
+     * hack 方案：
+     * 直接通过 `this.state.editorState = editorState` 来获取传过来的值，但是不会触发组件 `rerender`
+     */
     this.state.editorState = editorState;
   }
 
@@ -96,8 +100,6 @@ class WoxEditor extends Component {
         uploadCallback: this.uploadImageCallBack
       }
     };
-
-   
 
     return (
       <div>
