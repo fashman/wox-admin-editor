@@ -1,71 +1,18 @@
-.wox-editor-wrapper {
-	border: 1px solid #ccc !important;
-}
-
-.wox-editor {
-	padding: 10px !important;
-	border-radius: 2px !important;
-}
-
 :global {
-	.rdw-colorpicker-modal {
-		width: 230px !important;
-		height: auto !important;
+	.ql-container {
+		min-height: 100px;
+		background-color: #fff;
+
+		&.ql-disabled {
+			background-color: #f7f7f7;
+		}
 	}
 
-	.rdw-colorpicker-modal-options {
-		overflow: inherit !important;
+	.ql-toolbar {
+		height: 40px;
 	}
 
-  .rdw-colorpicker-option {
-		margin: 2px !important;
-		min-height: 20px !important;
-		min-width: 20px !important;
-		height: 20px !important;
-		width: 20px !important;
+	.ql-snow .ql-color-picker .ql-picker-options {
+		width: 172px;
 	}
-
-	.rdw-colorpicker-option {
-		width: 20px !important;
-		height: 20px !important;
-	}
-
-	.rdw-embedded-modal, .rdw-image-modal, .rdw-link-modal {
-	   button:disabled {
-       color: rgba(0,0,0,.25) !important;
-       background-color: #f7f7f7 !important;
-       border-color: #d9d9d9 !important;
-       cursor: not-allowed;
-     }
-
-     button {
-       color: #fff !important;
-       background-color: #108ee9 !important;
-       border-color: #108ee9 !important;
-       line-height: 30px;
-     }
-   }
-
-   .rdw-link-modal {
-     height: auto !important;
-   }
-
-   .rdw-link-modal-target-option {
-     margin-top: 5px;
-   }
-
-   .rdw-link-modal-target-optiont {
-     margin-bottom: 0 !important;
-   }
-
-   .rdw-link-modal-target-option {
-     margin: 3px 0 !important;
-   }
-
-   .public-DraftStyleDefault-block {
-     margin: 3px 0 !important;
-   }
-   .rdw-colorpicker-modal,.rdw-embedded-modal,.rdw-image-modal,.rdw-link-modal,.rdw-emoji-modal{
-    left:-103px;
-   }
 }

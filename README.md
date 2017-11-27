@@ -4,24 +4,16 @@
 
 | 属性 | 说明 | 类型 | 默认值 |
 | ---- | ---- | ---- | ---- |
-| callback | `必填` 回调函数，返回 `{ keyName: 当前值 }` | Function | |
-| keyName | `必填` 返回对象的属性名 | String | value |
-| value | `必填` 富文本框值 | String | |
-| url | 图片上传地址，不填则不会展示图片上传按钮 | String | 必填 |
+| callback | 回调函数，返回 `{ keyName: 当前值 }` | Function | |
+| keyName | 返回对象的属性名 | String | value |
 | readOnly | 是否只读 | Boolean | false |
+| value | 富文本框值 | String | |
+| toolbar | 功能栏，如需自定义配置，请参考 [默认配置](https://github.com/firebugger/wox-admin-editor/blob/master/src/index.jsx#L15) | Object | |
 
 ## Usage
 
 ```javascript
 import WoxEditor from 'wox-admin-editor';
 
-ReactDOM.render(
-  <WoxEditor
-    value={this.state.detailCN}
-    callback={this.callback}
-    keyName="detailCN"
-    url="upload.do"
-  />,
-  rootEle
-);
+ReactDOM.render(<WoxEditor />, rootEle);
 ```
